@@ -26,7 +26,6 @@ func SignupUser(c *fiber.Ctx) error {
 	return c.Status(201).JSON(fiber.Map{"message": "User signed up successfully"})
 }
 
-
 func LoginUser(c *fiber.Ctx) error {
 	var input models.User
 
@@ -44,6 +43,16 @@ func LoginUser(c *fiber.Ctx) error {
 		return c.Status(401).JSON(fiber.Map{"error": "Invalid credentials"})
 	}
 
-	return c.JSON(fiber.Map{"message": "Login successful", "user": user})
+	var auth models.Auth
+	auth.Email = user.Email
+	auth.UserId = user.ID
+	authResult := config.DB.Create(&auth)
+	if authResult.Error != nil {
+		return c.Status(500).JSON(fiber.Map{"error": "Invalid credentials"})
+	}
+	token, err := utils.CreateToken(auth.ID)
+	if err != nil {
+		return c.Status(500).JSON(fiber.Map{"error": "Invalid credentials"})
+	}
+	return c.JSON(fiber.Map{"message": "Login successful", "accessToken": token})
 }
-

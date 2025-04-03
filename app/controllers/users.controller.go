@@ -42,15 +42,8 @@ func LoginUser(c *fiber.Ctx) error {
 	if !utils.ComparePassword(input.Password, user.Password) {
 		return c.Status(401).JSON(fiber.Map{"error": "Invalid credentials"})
 	}
-
-	var auth models.Auth
-	auth.Email = user.Email
-	auth.UserId = user.ID
-	authResult := config.DB.Create(&auth)
-	if authResult.Error != nil {
-		return c.Status(500).JSON(fiber.Map{"error": "Invalid credentials"})
-	}
-	token, err := utils.CreateToken(auth.ID)
+	
+	token, err := utils.CreateToken(user)
 	if err != nil {
 		return c.Status(500).JSON(fiber.Map{"error": "Invalid credentials"})
 	}

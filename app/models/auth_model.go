@@ -9,7 +9,7 @@ import (
 
 type Auth struct {
 	ID        uuid.UUID `gorm:"type:uuid;default:gen_random_uuid();primaryKey" json:"id"`
-	UserId    uuid.UUID `gorm:"type:uuid" json:"userId"`
+	Jti    uuid.UUID `gorm:"type:uuid" json:"jti"`
 	Email     string    `gorm:"size:255,not null" json:"email" validate:"lte=255,required"`
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`

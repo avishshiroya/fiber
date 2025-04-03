@@ -4,6 +4,7 @@ go 1.23.2
 
 require (
 	github.com/gofiber/fiber/v2 v2.52.6
+	github.com/golang-jwt/jwt/v5 v5.2.2
 	github.com/google/uuid v1.6.0
 	golang.org/x/crypto v0.36.0
 	gorm.io/driver/postgres v1.5.11
@@ -12,7 +13,6 @@ require (
 
 require (
 	github.com/andybalholm/brotli v1.1.1 // indirect
-	github.com/golang-jwt/jwt/v5 v5.2.2 // indirect
 	github.com/jackc/pgpassfile v1.0.0 // indirect
 	github.com/jackc/pgservicefile v0.0.0-20240606120523-5a60cdf6a761 // indirect
 	github.com/jackc/pgx/v5 v5.7.4 // indirect

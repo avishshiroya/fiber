@@ -12,4 +12,6 @@ func UserRoutes(app *fiber.App) {
 	route.Post("/", controllers.SignupUser)
 	route.Post("/login", controllers.LoginUser)
 	route.Get("/", middleware.AuthMiddleware(), controllers.GetUserDetail)
+	route.Get("/logout", middleware.AuthMiddleware(), controllers.Logout)
+	route.Get("/refresh", controllers.Refresh)
 }

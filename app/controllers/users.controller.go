@@ -42,10 +42,15 @@ func LoginUser(c *fiber.Ctx) error {
 	if !utils.ComparePassword(input.Password, user.Password) {
 		return c.Status(401).JSON(fiber.Map{"error": "Invalid credentials"})
 	}
-	
+
 	token, err := utils.CreateToken(user)
 	if err != nil {
 		return c.Status(500).JSON(fiber.Map{"error": "Invalid credentials"})
 	}
 	return c.JSON(fiber.Map{"message": "Login successful", "accessToken": token})
+}
+
+func GetUserDetail(c *fiber.Ctx) error {
+	user := c.Locals("user")
+	return c.JSON(fiber.Map{"status": 200, "message": "User Details Get", "data": user})
 }

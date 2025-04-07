@@ -1,0 +1,76 @@
+{
+    "messages": [
+        {
+            "role": "user",
+            "content": "How do I make a Mediterranean Quinoa Chickpea Bowl?"
+        }   
+    ],
+    "response_format": {
+        "type": "json_schema",
+        "json_schema": {
+            "name": "recipe_data",
+            "strict": true,
+            "schema": {
+                "type": "object",
+                "properties": {
+                    "recipe_name": {
+                        "type": "string",
+                        "description": "The name of the recipe"
+                    },
+                    "ingredients_required": {
+                        "type": "array",
+                        "description": "List of ingredients required for the recipe",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "nutritional_info": {
+                        "type": "object",
+                        "description": "Nutritional information of the recipe",
+                        "properties": {
+                            "calories": {
+                                "type": "number",
+                                "description": "Calories in the recipe"
+                            },
+                            "protein": {
+                                "type": "number",
+                                "description": "Grams of protein in the recipe"
+                            },
+                            "carbs": {
+                                "type": "number",
+                                "description": "Grams of carbs in the recipe"
+                            },
+                            "fat": {
+                                "type": "number",
+                                "description": "Grams of fat in the recipe"
+                            }
+                        },
+                        "required": [
+                            "calories",
+                            "protein",
+                            "carbs",
+                            "fat"
+                        ],
+                        "additionalProperties": false
+                    },
+                    "cooking_time_minutes": {
+                        "type": "number",
+                        "description": "Cooking time in minutes"
+                    },
+                    "instructions": {
+                        "type": "string",
+                        "description": "Step-by-step instructions for the recipe"
+                    }
+                },
+                "required": [
+                    "recipe_name",
+                    "ingredients_required",
+                    "nutritional_info",
+                    "cooking_time_minutes",
+                    "instructions"
+                ],
+                "additionalProperties": false
+            }
+        }
+    }
+}

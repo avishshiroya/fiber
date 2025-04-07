@@ -5,8 +5,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	// "log"
 	"net/http"
-	"strings"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -30,41 +30,11 @@ var recipeRequest struct {
 }
 
 type Recipe struct {
-	CookingTime     int            `json:"cooking_time_minutes"`
-	Ingredients     []string       `json:"ingredients_required"`
-	NutritionalInfo map[string]int `json:"nutritional_info"`
-	Instructions    []string       `json:"instructions"`
-	RecipeName      string         `json:"recipe_name"`
-}
-
-//	{
-//		"recipe_name": "Mediterranean Quinoa Chickpea Bowl",
-//		"ingredients_required": [
-//		  "quinoa",
-//		  "chickpeas",
-//		  "cucumber",
-//		  "tomato",
-//		  "lemon",
-//		  "olive oil"
-//		],
-//		"nutritional_info": {
-//		  "calories": 480,
-//		  "protein": 22,
-//		  "carbs": 42,
-//		  "fat": 14
-//		},
-//		"cooking_time_minutes": 20,
-//		"instructions": "Cook quinoa, mix with chopped veggies and chickpeas, dress with lemon and olive oil."
-//	  }
-func cleanMarkdownCodeBlock(raw string) string {
-	raw = strings.TrimSpace(raw)
-	if strings.HasPrefix(raw, "```") {
-		parts := strings.SplitN(raw, "```", 3)
-		if len(parts) > 1 {
-			return strings.TrimSpace(parts[1])
-		}
-	}
-	return raw
+	CookingTime     float64            `json:"cooking_time_minutes"`
+	Ingredients     []string           `json:"ingredients_required"`
+	NutritionalInfo map[string]float64 `json:"nutritional_info"`
+	Instructions    string             `json:"instructions"`
+	RecipeName      string             `json:"recipe_name"`
 }
 
 func CreateRecipies(c *fiber.Ctx) error {
@@ -76,11 +46,15 @@ func CreateRecipies(c *fiber.Ctx) error {
 
 	// Prepare the message for the API
 	requestBody := map[string]interface{}{
-		"model": "google/gemini-2.5-pro-exp-03-25:free",
+		"model": "openrouter/quasar-alpha",
 		"messages": []map[string]string{
 			{
+				"role":    "system",
+				"content": "You are a trained cook who creates tasty and healthy recipes using only the ingredients available in the user's fridge. Your goal is to suggest creative and nutritious dishes based on the provided list of ingredients. Always ensure the recipe is practical, easy to follow, and uses only what's available in the input.",
+			},
+			{
 				"role":    "user",
-				"content": fmt.Sprintf("Please geneate the recipe using the given JSON data :\n\n%+v", recipeRequest),
+				"content": fmt.Sprintf("Generate a recipe using the following JSON data which contains the ingredients available in my fridge:\n\n%+v", recipeRequest),
 			},
 		},
 		"response_format": map[string]interface{}{
@@ -154,7 +128,7 @@ func CreateRecipies(c *fiber.Ctx) error {
 
 	// Set headers
 	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("Authorization", "Bearer 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")
+	req.Header.Set("Authorization", "Bearer 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")
 
 	// Make the request
 	client := &http.Client{}
@@ -167,7 +141,10 @@ func CreateRecipies(c *fiber.Ctx) error {
 	result, err := io.ReadAll(resp.Body)
 
 	if err != nil {
-		panic(err)
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": "Error in connectivity with cook.",
+			"data":  err,
+		})
 	}
 	var responseData map[string]interface{}
 	if err := json.Unmarshal(result, &responseData); err != nil {
@@ -177,7 +154,7 @@ func CreateRecipies(c *fiber.Ctx) error {
 	}
 
 	// Debugging response
-	fmt.Println("API Response:", responseData)
+	// fmt.Println("API Response:", responseData)
 
 	// Safely extract 'choices'
 	choicesRaw, ok := responseData["choices"]
@@ -215,19 +192,24 @@ func CreateRecipies(c *fiber.Ctx) error {
 		})
 	}
 
-	matches := cleanMarkdownCodeBlock(content)
+	// matches := cleanMarkdownCodeBlock(content)
 	var response Recipe
-	json.Unmarshal([]byte(matches), &response)
-	// if err := json.Unmarshal([]byte(matches), &response); err != nil {
-	// 	return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-	// 		"error": "Error at response unmarshel",
-	// 	})
+	// // json.Unmarshal([]byte(content), &response)
+	if err := json.Unmarshal([]byte(content), &response); err != nil {
+		fmt.Println(err)
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": "Error at response unmarshel",
+		})
+	}
+	// encodedJSON, err := json.MarshalIndent(response, "", "  ")
+	// if err != nil {
+	// 	log.Fatal(err)
 	// }
 
 	return c.JSON(fiber.Map{
 		"status":  200,
 		"message": "Data Get Successfully",
-		"data":    matches,
+		"data":    response,
 	})
 
 }

@@ -1,14 +1,11 @@
 package controllers
 
 import (
-	"bytes"
-	"encoding/json"
 	"fmt"
-	"io"
-	// "log"
-	"net/http"
+	"log"
 
 	"github.com/gofiber/fiber/v2"
+	openrouter "github.com/shiroyaavish/open_router"
 )
 
 type NutritionalInfo struct {
@@ -115,96 +112,13 @@ func CreateRecipies(c *fiber.Ctx) error {
 			},
 		},
 	}
-
-	jsonData, err := json.Marshal(requestBody)
-	if err != nil {
-		panic(err)
-	}
-	// Create the HTTP request
-	req, err := http.NewRequest("POST", "https://openrouter.ai/api/v1/chat/completions", bytes.NewBuffer(jsonData))
-	if err != nil {
-		panic(err)
-	}
-
-	// Set headers
-	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("Authorization", "Bearer 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")
-
-	// Make the request
-	client := &http.Client{}
-	resp, err := client.Do(req)
-	if err != nil {
-		panic(err)
-	}
-
-	defer resp.Body.Close()
-	result, err := io.ReadAll(resp.Body)
-
-	if err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"error": "Error in connectivity with cook.",
-			"data":  err,
-		})
-	}
-	var responseData map[string]interface{}
-	if err := json.Unmarshal(result, &responseData); err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"error": "Failed to unmarshal response",
-		})
-	}
-
-	// Debugging response
-	// fmt.Println("API Response:", responseData)
-
-	// Safely extract 'choices'
-	choicesRaw, ok := responseData["choices"]
-	if !ok {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"error": "Missing 'choices' in API response",
-		})
-	}
-
-	choices, ok := choicesRaw.([]interface{})
-	if !ok || len(choices) == 0 {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"error": "Invalid or empty 'choices' format",
-		})
-	}
-
-	choice, ok := choices[0].(map[string]interface{})
-	if !ok {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"error": "Invalid 'choice' structure",
-		})
-	}
-
-	message, ok := choice["message"].(map[string]interface{})
-	if !ok {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"error": "Missing 'message' in choice",
-		})
-	}
-
-	content, ok := message["content"].(string)
-	if !ok {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"error": "Missing 'content' in message",
-		})
-	}
-
-	// matches := cleanMarkdownCodeBlock(content)
 	var response Recipe
-	// // json.Unmarshal([]byte(content), &response)
-	if err := json.Unmarshal([]byte(content), &response); err != nil {
-		fmt.Println(err)
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"error": "Error at response unmarshel",
-		})
+	err := openrouter.QuasarAlpha(requestBody, "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", &response)
+	if err != nil {
+		log.Println("Error:", err)
+	} else {
+		fmt.Println("Response:", response)
 	}
-	// encodedJSON, err := json.MarshalIndent(response, "", "  ")
-	// if err != nil {
-	// 	log.Fatal(err)
-	// }
 
 	return c.JSON(fiber.Map{
 		"status":  200,

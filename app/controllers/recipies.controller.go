@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"fmt"
-	"log"
 
 	"github.com/gofiber/fiber/v2"
 	openrouter "github.com/shiroyaavish/open_router"
@@ -113,17 +112,18 @@ func CreateRecipies(c *fiber.Ctx) error {
 		},
 	}
 	var response Recipe
-	err := openrouter.QuasarAlpha(requestBody, "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", &response)
-	if err != nil {
-		log.Println("Error:", err)
-	} else {
-		fmt.Println("Response:", response)
-	}
+	totalToken := openrouter.QuasarAlpha(requestBody, "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", &response)
+	// if err != nil {
+	// 	log.Println("Error:", err)
+	// } else {
+	// 	fmt.Println("Response:", response)
+	// }
 
 	return c.JSON(fiber.Map{
-		"status":  200,
-		"message": "Data Get Successfully",
-		"data":    response,
+		"status":    200,
+		"message":   "Data Get Successfully",
+		"usedToken": totalToken,
+		"data":      response,
 	})
 
 }

@@ -44,10 +44,10 @@ github.com/pmezard/go-difflib v1.0.0/go.mod h1:iKH77koFhYxTK1pcRnkKkqfTogsbg7gZN
 github.com/rivo/uniseg v0.2.0/go.mod h1:J6wj4VEh+S6ZtnVlnTBMWIodfgj8LQOQFoIToxlJtxc=
 github.com/rivo/uniseg v0.4.7 h1:WUdvkW8uEhrYfLC4ZzdpI2ztxP1I582+49Oc5Mq64VQ=
 github.com/rivo/uniseg v0.4.7/go.mod h1:FN3SvrM+Zdj16jyLfmOkMNblXMcoc8DfTHruCPUcx88=
-github.com/shiroyaavish/open_router v0.0.0-20250408155926-678e67d3112b h1:1qyoW4inmI9SJXWFjFLH5oRvnYApKGaSZsMGTNm0pa0=
-github.com/shiroyaavish/open_router v0.0.0-20250408155926-678e67d3112b/go.mod h1:hgCTShjl1m7tHMRmL6lAXNtf0HpvIEryuTgNEQLZt5w=
 github.com/shiroyaavish/open_router v0.0.0-20250408161342-e7f8df162cdd h1:Ewgmh1M5ZPhXp1UCdu0SMXNhtuTOFnXX04qyXtM/WRc=
 github.com/shiroyaavish/open_router v0.0.0-20250408161342-e7f8df162cdd/go.mod h1:hgCTShjl1m7tHMRmL6lAXNtf0HpvIEryuTgNEQLZt5w=
+github.com/shiroyaavish/open_router v1.0.0 h1:EmP6xemc81IspHAvs7m1RwiqMLCvcY6/LypDMzs1kss=
+github.com/shiroyaavish/open_router v1.0.0/go.mod h1:hgCTShjl1m7tHMRmL6lAXNtf0HpvIEryuTgNEQLZt5w=
 github.com/stretchr/objx v0.1.0/go.mod h1:HFkY916IF+rwdDfMAkV7OtwuqBVzrE8GR6GFx+wExME=
 github.com/stretchr/testify v1.3.0/go.mod h1:M5WIy9Dh21IEIfnGCwXGc5bZfKNJtfHm1UVUgZn+9EI=
 github.com/stretchr/testify v1.7.0/go.mod h1:6Fq8oRcR53rry900zMqJjRRixrwX3KX962/h/Wwjteg=

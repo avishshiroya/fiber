@@ -9,4 +9,5 @@ import (
 func RecipieRoute(app *fiber.App) {
 	route := app.Group("/api/v1/recipies")
 	route.Post("/", controllers.CreateRecipies)
+	route.Post("/notification", controllers.CreateNotification)
 }
